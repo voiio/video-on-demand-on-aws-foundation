@@ -40,45 +40,27 @@ const getJobSettings = async (bucket, settingsFile) => {
  * to dupport multiple output groups of the same type. 
  * 
  */
-const updateJobSettings = async (job, inputPath, outputPath, metadata, role) => {
+const updateJobSettings = async (job, inputPath, destinationBucket, metadata, role) => {
     console.log(`Updating Job Settings with the source and destination details`);
-    const getPath = (group, num) => {
-        try {
-            let path = '';
-            if (group.CustomName) {
-                path = `${outputPath}/${group.CustomName.replace(/\s+/g, '')}/`;
-            } else {
-                path = `${outputPath}/${group.Name.replace(/\s+/g, '')}${num}/`;
-            }
-            return path;
-        } catch (err) {
-            throw Error('Cannot validate group name in job.Settings.OutputGroups. Please check your job settings file.');
-        }
-    };
     try {
-        let fileNum = 1;
-        let hlsNum = 1;
-        let dashNum = 1;
-        let mssNum = 1;
-        let cmafNum = 1;
         job.Settings.Inputs[0].FileInput = inputPath;
         const outputGroups = job.Settings.OutputGroups;
         for (let group of outputGroups) {
             switch (group.OutputGroupSettings.Type) {
                 case 'FILE_GROUP_SETTINGS':
-                    group.OutputGroupSettings.FileGroupSettings.Destination = getPath(group, fileNum++);
+                    group.OutputGroupSettings.FileGroupSettings.Destination = group.OutputGroupSettings.FileGroupSettings.Destination.replace('$destinationbucket$', destinationBucket);
                     break;
                 case 'HLS_GROUP_SETTINGS':
-                    group.OutputGroupSettings.HlsGroupSettings.Destination = getPath(group, hlsNum++);
+                    group.OutputGroupSettings.HlsGroupSettings.Destination = group.OutputGroupSettings.HlsGroupSettings.Destination.replace('$destinationbucket$', destinationBucket);
                     break;
                 case 'DASH_ISO_GROUP_SETTINGS':
-                    group.OutputGroupSettings.DashIsoGroupSettings.Destination = getPath(group, dashNum++);
+                    group.OutputGroupSettings.DashIsoGroupSettings.Destination = group.OutputGroupSettings.DashIsoGroupSettings.Destination.replace('$destinationbucket$', destinationBucket);
                     break;
                 case 'MS_SMOOTH_GROUP_SETTINGS':
-                    group.OutputGroupSettings.MsSmoothGroupSettings.Destination = getPath(group, mssNum++);
+                    group.OutputGroupSettings.MsSmoothGroupSettings.Destination = group.OutputGroupSettings.MsSmoothGroupSettings.Destination.replace('$destinationbucket$', destinationBucket);
                     break;
                 case 'CMAF_GROUP_SETTINGS':
-                    group.OutputGroupSettings.CmafGroupSettings.Destination = getPath(group, cmafNum++);
+                    group.OutputGroupSettings.CmafGroupSettings.Destination = group.OutputGroupSettings.CmafGroupSettings.Destination.replace('$destinationbucket$', destinationBucket);
                     break;
                 default:
                     throw Error('OutputGroupSettings.Type is not a valid type. Please check your job settings file.');

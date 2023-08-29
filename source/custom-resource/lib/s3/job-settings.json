@@ -554,7 +554,7 @@
               "SegmentLength": 3,
               "TimedMetadataId3Period": 10,
               "CaptionLanguageSetting": "OMIT",
-              "Destination": "s3://destinationbucket/guid/hls/",
+              "Destination": "s3://$destinationbucket$/recordings/$fn$/",
               "TimedMetadataId3Frame": "PRIV",
               "CodecSpecification": "RFC_4281",
               "OutputSelection": "MANIFESTS_AND_SEGMENTS",
