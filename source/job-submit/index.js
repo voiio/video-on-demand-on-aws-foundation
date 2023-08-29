@@ -28,7 +28,6 @@ exports.handler = async (event,context) => {
         const settingsFile = `${srcVideo.split("/")[0]}/${JOB_SETTINGS}`;
         const guid = uuidv4();
         const inputPath = `s3://${srcBucket}/${srcVideo}`;
-        const outputPath = `s3://${DESTINATION_BUCKET}/${guid}`;
         const metaData = {
             Guid:guid,
             StackName:STACKNAME,
@@ -41,7 +40,7 @@ exports.handler = async (event,context) => {
         /**
          * parse settings file to update source / destination
          */
-        job = await utils.updateJobSettings(job,inputPath,outputPath,metaData,MEDIACONVERT_ROLE);
+        job = await utils.updateJobSettings(job,inputPath,DESTINATION_BUCKET,metaData,MEDIACONVERT_ROLE);
         /**
          * Submit Job
          */
